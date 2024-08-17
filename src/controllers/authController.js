@@ -19,6 +19,7 @@ exports.handleGoogleCallback = (req, res) => {
   }
 };
 
+
 exports.completeRegistration = async (req, res) => {
   const { googleId, ...formData } = req.body;
   try {
