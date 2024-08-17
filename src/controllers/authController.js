@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
+//google oauth
 exports.handleGoogleCallback = (req, res) => {
   if (!req.user.password) {
     res.redirect(
@@ -19,7 +20,7 @@ exports.handleGoogleCallback = (req, res) => {
   }
 };
 
-
+//biodata user
 exports.completeRegistration = async (req, res) => {
   const { googleId, ...formData } = req.body;
   try {
