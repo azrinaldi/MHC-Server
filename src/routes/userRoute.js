@@ -6,6 +6,9 @@ const verifyToken = require('../middleware/verifyToken');
 //Admin
 router.get("/getAllUsers", verifyToken, userController.getAllUsers);
 
+router.post("/addNewUser", verifyToken, userController.addNewUser);
+
+router.delete("/deleteUser/:id", verifyToken, userController.deleteUser);
 
 //User
 router.get("/getUserName", verifyToken, userController.getUserName);

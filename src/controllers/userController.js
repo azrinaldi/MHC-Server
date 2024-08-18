@@ -1,4 +1,6 @@
+const { UserRefreshClient } = require("google-auth-library");
 const User = require("../models/user");
+const Schedule = require("../models/schedule");
 
 //User
 exports.getUserName = async (req, res) => {
@@ -12,7 +14,9 @@ exports.getUserName = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const userName = `${user?.biodata?.name?.givenName || ""} ${user?.biodata?.name?.familyName || ""}`.trim();
+    const userName = `${user?.biodata?.name?.givenName || ""} ${
+      user?.biodata?.name?.familyName || ""
+    }`.trim();
     const userPhoto = user.biodata.photos;
 
     return res.status(200).json({ userName, userPhoto });
@@ -21,7 +25,6 @@ exports.getUserName = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
 
 exports.getUserProfile = async (req, res) => {
   try {
@@ -48,11 +51,9 @@ exports.updateProfile = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    console.log("Changes: ", changes);
 
     const updatedBiodata = { ...user.biodata.toObject(), ...changes };
 
-    console.log(updatedBiodata);
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { biodata: updatedBiodata },
@@ -84,10 +85,56 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-exports.addNewUser = async (req, res)=>{
-  try{
-
-  }catch{
-    res.status(500).json({ message: "Failed to add new user" });
+exports.addNewUser = async (req, res) => {
+  try {
+    const { givenName, familyName, email, password, role, status } = req.body;
+    console.log(req.body);
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(403).json({ message: "Email telah terdaftar" });
+    }
+    user = new User({
+      password: password,
+      email: email,
+      biodata: {
+        name: {
+          familyName: familyName,
+          givenName: givenName,
+        },
+        status: status,
+      },
+      role: role,
+    });
+    await user.save();
+    res.status(201).json({
+      message: "Akun pengguna berhasil dibuat",
+    });
+  } catch {
+    res.status(500).json({ message: "Gagal membuat akun" });
   }
-}
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    console.log(user.activeSchedule);
+    if (user.activeSchedule) {
+      const schedule = await Schedule.findById(user.activeSchedule);
+      if (schedule) {
+        console.log(schedule);
+        schedule.client = null;
+        await schedule.save();
+      }
+    }
+    await User.findByIdAndDelete(id);
+    res.status(200).json({ message: "User berhasil dihapus" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ message: "Gagal menghapus user" });
+  }
+};

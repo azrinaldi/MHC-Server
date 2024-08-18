@@ -13,7 +13,6 @@ const forgotPasswordRoute = require("./src/routes/forgotPasswordRoute");
 const scheduleRoute = require("./src/routes/scheduleRoute");
 const testRoute = require("./src/routes/testRoute")
 const userRoute = require("./src/routes/userRoute");
-const { isDate } = require("moment-timezone");
 
 const app = express();
 
@@ -64,11 +63,3 @@ app.use((err, req, res, next) => {
 app.listen(PORT, HOST, () => {
   console.log(`Server is running at http://${HOST}:${PORT}`);
 });
-
-const date = new Date();
-console.log("Date: ", date)
-console.log("Local time:", date.toLocaleString('id-ID'));
-console.log("UTC time:", date.toUTCString());
-console.log("Local hours:", date.getHours());
-console.log("UTC hours:", date.getUTCHours());
-console.log("Timezone offset in minutes:", date.getTimezoneOffset());
