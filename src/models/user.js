@@ -9,7 +9,7 @@ const biodataSchema = new mongoose.Schema({
   photos:{ type: String, required: false },
   placeOfBirth: { type: String, required: false },
   dateOfBirth: { type: Date, required: false },
-  status: { type: String, enum: ["Dosen", "Tendik", "Mahasiswa"], required: false },
+  status: { type: String, required: false },
   fakultas: { type: String, enum: ["FTI", "FS", "FTIK"], required: false },
   prodi: { type: String, required: false },
   phoneNumber: { type: String, required: false },

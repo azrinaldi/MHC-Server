@@ -5,7 +5,6 @@ const checkScheduleExpiration = async (req, res, next) => {
   try {
     const currentDate = new Date();
 
-    console.log("Now: ", currentDate);
     const expiredSchedules = await Schedule.find({
       date: { $lt: currentDate },
       expired: false,
