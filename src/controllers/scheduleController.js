@@ -37,6 +37,10 @@ exports.getScheduleByDate = async (req, res) => {
       const [datePart, timePart] = formattedDate.split(" ");
       const [hour, minute] = timePart.split(":");
 
+      const clientData = schedule.client
+        ? schedule.client
+        : { _id: schedule.client };
+
       return {
         ...schedule.toObject(),
         date: datePart,

@@ -88,7 +88,6 @@ exports.getAllUsers = async (req, res) => {
 exports.addNewUser = async (req, res) => {
   try {
     const { givenName, familyName, email, password, role, status } = req.body;
-    console.log(req.body);
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(403).json({ message: "Email telah terdaftar" });
@@ -122,11 +121,9 @@ exports.deleteUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    console.log(user.activeSchedule);
     if (user.activeSchedule) {
       const schedule = await Schedule.findById(user.activeSchedule);
       if (schedule) {
-        console.log(schedule);
         schedule.client = null;
         await schedule.save();
       }
